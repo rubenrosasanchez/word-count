@@ -60,10 +60,10 @@ class WordCountTest extends AnyFlatSpec with Matchers {
 
   // testOnly *.WordCountTest -- -z "single-line file with csv output"
   it should "check the single-line file with csv output file" in {
-    val tempOut = getClass.getResource("/output/").toURI.toString
-      .split(":").toSeq.last
-    val testType = "single-line/"
-    val completeTestPath = tempOut + testType
+    val tempOut = outDirSingleLine/*getClass.getResource("/output/").toURI.toString
+      .split(":").toSeq.last*/
+    //val testType = "-single-line/"
+    val completeTestPath = tempOut //+ testType
     var emptyFile = false
     val expectedResult: String = "three,3\ntwo,2\none,1\n"
 
@@ -93,8 +93,8 @@ class WordCountTest extends AnyFlatSpec with Matchers {
 
     println("completeTestPath == " + completeTestPath)
 
-    //val directory = new Directory(new File(completeTestPath))
-    //directory.deleteRecursively()
+    val directory = new Directory(new File(completeTestPath))
+    directory.deleteRecursively()
 
     file should be (expectedResult)
     emptyFile should be (false)

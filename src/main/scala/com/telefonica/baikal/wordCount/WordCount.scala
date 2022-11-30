@@ -55,6 +55,6 @@ object WordCount {
       .count()
       .orderBy(col("count").desc)
 
-    data.coalesce(1).write.csv(outputPath)
+    data.coalesce(1).write.mode("overwrite").csv(outputPath)
   }
 }
