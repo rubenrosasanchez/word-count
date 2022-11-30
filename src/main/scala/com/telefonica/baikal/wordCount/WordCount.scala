@@ -9,7 +9,7 @@ object WordCount {
 
   case class WordRef(word: String, count: Long)
 
-  def run(sparkSession: SparkSession, path: String): DataFrame /*Map[String, Long]*/ = {
+  def run(sparkSession: SparkSession, path: String): DataFrame = {
     import sparkSession.implicits._
 
     sparkSession.read.text(path)
@@ -37,12 +37,11 @@ object WordCount {
       .orderBy(col("count").desc)
       .as[WordRef]
 
-    //dsr.collect().map(r => Map(dsr.columns.zip(r.toSeq):_*))
     dsr.collect().map(r => r.word -> r.count).toMap
   }
 
   // Output: escribir en un csv
-  def countIntoFile(sparkSession: SparkSession, inputPath: String, outputPath: String): Unit /*Map[String, Long]*/ = {
+  def countIntoFile(sparkSession: SparkSession, inputPath: String, outputPath: String): Unit = {
     import sparkSession.implicits._
 
     val data = sparkSession.read.text(inputPath)
