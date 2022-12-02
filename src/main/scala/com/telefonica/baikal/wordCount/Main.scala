@@ -39,7 +39,7 @@ object Main {
       println("input => From:" + in + " \n\t To: " + out)
 
       if(in.nonEmpty && out.nonEmpty) {
-        WordCount.countIntoFile(spark, in, out)
+        WordCount.WordCountIntoFile(spark, in, out)
       }
     } finally {
       spark.close()

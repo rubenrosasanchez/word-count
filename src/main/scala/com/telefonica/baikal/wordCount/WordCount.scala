@@ -9,12 +9,14 @@ object WordCount {
 
   case class WordRef(word: String, count: Long)
 
+  val regex: String = "[^a-zà-úä-üA-ZÀ-ÚÄ-Ü]+"
+  // "[,.;:¿?¡!\\/#$%<·>ºª^&*{}=\\-_`~()”“\"…\\[\\]]"
   def run(sparkSession: SparkSession, path: String): DataFrame = {
     import sparkSession.implicits._
 
     sparkSession.read.text(path)
       .as[String]
-      .map(_.replaceAll("[.,¡¿?\\/#!$%^&*;:{}=\\-_`~()”“\"…]", " "))
+      .map(_.replaceAll(regex, " "))
       .flatMap(_.split(" "))
       .map(m => WordRef(m.toLowerCase(), 1L))
       .filter($"word" =!= " " && $"word" =!= "")
@@ -28,7 +30,7 @@ object WordCount {
 
     val dsr = sparkSession.read.text(path)
       .as[String]
-      .map(_.replaceAll("[.,¿¡?\\/#!$%^&*;:{}=\\-_`~()”“\"…]", " "))
+      .map(_.replaceAll(regex, " "))
       .flatMap(_.split(" "))
       .map(m => WordRef(m.toLowerCase(), 1L))
       .filter($"word" =!= " " && $"word" =!= "")
@@ -40,13 +42,12 @@ object WordCount {
     dsr.collect().map(r => r.word -> r.count).toMap
   }
 
-  // Output: escribir en un csv
-  def countIntoFile(sparkSession: SparkSession, inputPath: String, outputPath: String): Unit = {
+  def WordCountIntoFile(sparkSession: SparkSession, inputPath: String, outputPath: String): Unit = {
     import sparkSession.implicits._
 
     val data = sparkSession.read.text(inputPath)
       .as[String]
-      .map(_.replaceAll("[.,¿¡?\\/#!$%^&*;:{}=\\-_`~()”“\"…]", " "))
+      .map(_.replaceAll(regex, " "))
       .flatMap(_.split(" "))
       .map(m => WordRef(m.toLowerCase(), 1L))
       .filter($"word" =!= " " && $"word" =!= "")
