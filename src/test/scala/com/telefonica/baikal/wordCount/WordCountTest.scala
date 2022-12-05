@@ -176,4 +176,22 @@ class WordCountTest extends AnyFlatSpec with Matchers {
 
     diff.isEmpty should be (true)
   }
+
+  // testOnly *.WordCountTest -- -z "get word-count of multiple-line file as Map"
+  it should "get word-count of multiple-line file as Map" in {
+    val spark = SparkSession
+      .builder()
+      .appName("Word Count Algorithm")
+      .master("local[*]")
+      .getOrCreate()
+
+    val res = WordCount.getWordCountMap(spark, multipleLinePath)
+    val expectedResult = Map("three" -> 3, "two" -> 2, "one" -> 1,
+                              "four" -> 4, "qwerty" -> 1, "asdf" -> 1)
+    val diff = (res.keySet -- expectedResult.keySet) ++ (expectedResult.keySet -- res.keySet)
+
+    diff.isEmpty should be (true)
+  }
+
+
 }
