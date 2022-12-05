@@ -51,16 +51,11 @@ class WordCountTest extends AnyFlatSpec with Matchers {
       .getOrCreate()
 
     val res = WordCount.run(spark, singleLinePath)
-    println("\t\tResult in test single line path")
-
 
     val listRes = res.collect().toSeq
     val expectedResult = List(Row("three", 3), Row("two", 2), Row("one", 1))
 
     listRes should be (expectedResult)
-    println("res:")
-    res.show()
-    println("expected result: " + expectedResult.toString())
   }
 
   // testOnly *.WordCountTest -- -z "single-line file with csv output"
@@ -94,7 +89,6 @@ class WordCountTest extends AnyFlatSpec with Matchers {
 
     file should be (expectedResult)
     emptyFile should be (false)
-
   }
 
   // testOnly *.WordCountTest -- -z "multiple-line test on Dataframe"
@@ -106,8 +100,6 @@ class WordCountTest extends AnyFlatSpec with Matchers {
       .getOrCreate()
 
     val res = WordCount.run(spark, multipleLinePath)
-    println("\t\tResult in test multiple line path")
-    res.show()
 
     val listRes = res.collect().toSeq
     val expectedResult = Array(
@@ -130,20 +122,13 @@ class WordCountTest extends AnyFlatSpec with Matchers {
   }
 
 
-  // testOnly *.WordCountTest -- -z "multiple-line file with output in csv file"
+  // testOnly *.WordCountTest -- -z "check multiple-line file with output in csv file"
   it should "check multiple-line file with output in csv file" in {
     val spark = SparkSession
       .builder()
       .appName("Word Count Algorithm")
       .master("local[*]")
       .getOrCreate()
-
-    /*
-    WordCount.WordCountIntoFile(spark, multipleLinePath, outDirMultipleLine)
-    println("\t\tResult in test single line path")
-
-    true should be (true)
-    */
 
     var emptyFile = false
     val expectedResult: String = "four,4\nthree,3\ntwo,2\none,1\nqwerty,1\nasdf,1\n"//"three,3\ntwo,2\none,1\n"
@@ -172,14 +157,12 @@ class WordCountTest extends AnyFlatSpec with Matchers {
       emptyFile = true
     }
 
-    println("file as string in multiple-line test:\n" + file)
-
     file should be (expectedResult)
     emptyFile should be (false)
 
   }
 
-  // testOnly *.WordCountTest -- -z "Map"
+  // testOnly *.WordCountTest -- -z "get word-count of single-line file as Map"
   it should "get word-count of single-line file as Map" in {
     val spark = SparkSession
       .builder()
@@ -188,40 +171,9 @@ class WordCountTest extends AnyFlatSpec with Matchers {
       .getOrCreate()
 
     val res = WordCount.getWordCountMap(spark, singleLinePath)
-    println("\t\tResult in test single line path")
-    println("Map of single-line file is: \n\t" + res.toString())
+    val expectedResult = Map("three" -> 3, "two" -> 2, "one" -> 1)
+    val diff = (res.keySet -- expectedResult.keySet) ++ (expectedResult.keySet -- res.keySet)
 
-
-    true should be (true)
+    diff.isEmpty should be (true)
   }
-
-  //////////////////
-  /*
-  // testOnly *.WordCountTest -- -z "quijote"
-  it should "word-count of quijote file" in {
-    val spark = SparkSession
-      .builder()
-      .appName("Word Count Algorithm")
-      .master("local[*]")
-      .getOrCreate()
-
-    val res = WordCount.run(spark, otroQuijoteFilePath)
-    println("\t\tResult in test multiple line path")
-    res.show()
-    true should be (true)
-  }
-
-  // testOnly *.WordCountTest -- -z "quijote file with output in csv file"
-  it should "word-count of quijote into csv output file" in {
-    val spark = SparkSession
-      .builder()
-      .appName("Word Count Algorithm")
-      .master("local[*]")
-      .getOrCreate()
-
-    WordCount.WordCountIntoFile(spark, otroQuijoteFilePath, outDirQuijote)
-    println("\t\tResult in test single line path")
-    true should be (true)
-  }
-  */
 }
