@@ -28,7 +28,7 @@ object WordCount {
   def getWordCountMap(sparkSession: SparkSession, path: String): Map[String, Long] = {
     import sparkSession.implicits._
 
-    val dsr = sparkSession.read.text(path)
+    sparkSession.read.text(path)
       .as[String]
       .map(_.replaceAll(regex, " "))
       .flatMap(_.split(" "))
@@ -38,14 +38,13 @@ object WordCount {
       .count()
       .orderBy(col("count").desc)
       .as[WordRef]
-
-    dsr.collect().map(r => r.word -> r.count).toMap
+      .collect().map(r => r.word -> r.count).toMap
   }
 
   def WordCountIntoFile(sparkSession: SparkSession, inputPath: String, outputPath: String): Unit = {
     import sparkSession.implicits._
 
-    val data = sparkSession.read.text(inputPath)
+    sparkSession.read.text(inputPath)
       .as[String]
       .map(_.replaceAll(regex, " "))
       .flatMap(_.split(" "))
@@ -54,7 +53,6 @@ object WordCount {
       .groupBy($"word")
       .count()
       .orderBy(col("count").desc)
-
-    data.coalesce(1).write.mode("overwrite").csv(outputPath)
+      .coalesce(1).write.mode("overwrite").csv(outputPath)
   }
 }
