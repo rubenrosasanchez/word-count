@@ -1,6 +1,5 @@
 package com.telefonica.baikal.wordCount
 
-import org.apache.commons.cli.MissingArgumentException
 import org.apache.spark.sql.SparkSession
 import org.rogach.scallop.{ScallopConf, ScallopOption}
 
@@ -32,23 +31,14 @@ object Main {
     spark
   }
 
-  // run --from=entrada --to=salida
   def main(args: Array[String]): Unit = {
-    /*
-    val spark = SparkSession
-      .builder()
-      .appName("Word Count Algorithm")
-      .master("local[*]")
-      .getOrCreate()
-    */
-
     val input = new Arguments(args)
     val in = input.from()
     val out = input.to()
     val spark = buildSparkSession(input.master.toOption)
 
     try {
-        WordCount.WordCountIntoFile(spark, in, out)
+        WordCount.run(spark, in, out)
     } finally {
       spark.close()
     }

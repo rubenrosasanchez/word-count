@@ -1,5 +1,3 @@
-//import Dependencies.sparkSql
-//import coursier.core.Configuration.provided
 import sbt._
 
 object Dependencies {
