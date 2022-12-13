@@ -23,6 +23,6 @@ object WordCount {
       .groupBy($"word")
       .count()
       .orderBy(col("count").desc)
-      .coalesce(1).write.mode("overwrite").csv(outputPath)
+      .coalesce(1).write.mode("overwrite").option("header", value = true).csv(outputPath)
   }
 }
