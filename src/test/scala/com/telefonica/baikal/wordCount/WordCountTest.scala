@@ -36,7 +36,7 @@ class WordCountTest extends AnyFlatSpec with Matchers {
   // testOnly *.WordCountTest -- -z "single-line file with csv output"
   it should "check the single-line file with csv output file" in {
     var emptyFile = false
-    val expectedResult: String = "three,3\ntwo,2\none,1\n"
+    val expectedResult: String = "word,count\nthree,3\ntwo,2\none,1\n"
     /* Expected result:
     +-----+-----+
     | word|count|
@@ -75,7 +75,7 @@ class WordCountTest extends AnyFlatSpec with Matchers {
       .getOrCreate()
 
     var emptyFile = false
-    val expectedResult: String = "four,4\nthree,3\ntwo,2\none,1\nqwerty,1\nasdf,1\n"//"three,3\ntwo,2\none,1\n"
+    val expectedResult: String = "word,count\nfour,4\nthree,3\ntwo,2\none,1\nqwerty,1\nasdf,1\n"//"three,3\ntwo,2\none,1\n"
 
     /*
     Expected result:

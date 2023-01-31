@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val sparkVersion = "3.1.2"
+  val sparkVersion = "3.1.2" //3.1.3
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion //% provided
   val sparkSql = "org.apache.spark" %% "spark-sql" % sparkVersion
 
@@ -14,8 +14,8 @@ object Dependencies {
 
 
   lazy val dependencies = Seq(
-    sparkCore,// % Provided,
-    sparkSql,// % Provided,
+    sparkCore, // % Provided,
+    sparkSql, // % Provided,
     scallop,
     hadoopAzure,
 
