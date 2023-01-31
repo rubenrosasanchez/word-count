@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/out/test-javier/part-00000-6fd94aae-0a65-4a5c-89e6-2ead1146daf3-c000.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/out/test-tilde/part-00000-786893c6-c136-4d23-b7d9-350d5eb1177d-c000.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
