@@ -1,26 +1,46 @@
 package com.telefonica.baikal.wordCount
 
-import com.telefonica.baikal.wordCount.WordCount.getClass
 import org.apache.spark.sql.SparkSession
+import org.rogach.scallop.{ScallopConf, ScallopOption}
+
+class Arguments(arguments: Seq[String]) extends ScallopConf(arguments) {
+  val from: ScallopOption[String] = opt[String] (required = true)
+  val to: ScallopOption[String] = opt[String] (required = true)
+  val master: ScallopOption[String] = opt[String] (required = false)
+  verify()
+}
 
 object Main {
 
-  private val quijoteFilePath = getClass.getResource("/data/quijote/el_quijote.txt")
+  val EnvSaName: String = "WC_SA_ACCOUNT"
+  val EnvSaKey: String = "WC_SA_KEY"
 
-  // = getClass.getResource("/data/single-line/basic.txt")//.toURI.toString
-  private val multipleLinePath = getClass.getResource("/data/multiple-line/basic.txt")
-
-
-  def main(args: Array[String]): Unit = {
-
-    val spark = SparkSession
-      .builder()
+  protected def buildSparkSession(sparkMaster: Option[String] = None): SparkSession = {
+    val sparkBuilder = SparkSession.builder()
       .appName("Word Count Algorithm")
-      .master("local[*]")
+      .config("spark.sql.session.timeZone", "UTC")
+      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .config(s"fs.azure.account.key.${sys.env.getOrElse(EnvSaName, "")}.blob.core.windows.net", sys.env.getOrElse(EnvSaKey, ""))
+      .config("fs.AbstractFileSystem.wasb.Impl", "org.apache.hadoop.fs.azure.NativeAzureFileSystem")
+      .config("fs.AbstractFileSystem.wasbs.Impl", "org.apache.hadoop.fs.azure.NativeAzureFileSystem$Secure")
+
+    val spark = sparkMaster.map(master => sparkBuilder.master(master))
+      .getOrElse(sparkBuilder)
       .getOrCreate()
 
-    val singleLinePath = spark.sparkContext.textFile("src/test/resources/data/single-line/basic.txt").getClass.toString
-    WordCount.run(spark, singleLinePath)
+    spark
   }
 
+  def main(args: Array[String]): Unit = {
+    val input = new Arguments(args)
+    val in = input.from()
+    val out = input.to()
+    val spark = buildSparkSession(input.master.toOption)
+
+    try {
+        WordCount.run(spark, in, out)
+    } finally {
+      spark.close()
+    }
+  }
 }
